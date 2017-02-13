@@ -1,0 +1,60 @@
+--- tokyocabinet-java-1.24/configure.in.orig	2010-09-20 01:11:07.000000000 +0200
++++ tokyocabinet-java-1.24/configure.in	2017-02-13 21:14:42.368911419 +0100
+@@ -23,28 +23,17 @@
+ MYLIBOBJFILES="hdb.o bdb.o bdbcur.o fdb.o tdb.o tdbqry.o adb.o util.o myconf.o"
+ 
+ # Building flags
+-MYCFLAGS="-std=c99 -Wall -fPIC -fsigned-char -O2"
+-MYCPPFLAGS="-I. -I\$(INCLUDEDIR) -L$HOME/include -L/usr/local/include -DNDEBUG -D_GNU_SOURCE=1"
+-MYLDFLAGS="-L. -L\$(LIBDIR) -L$HOME/lib -L/usr/local/lib"
++MYCFLAGS="$CFLAGS -std=c99 -Wall -fPIC -fsigned-char"
++MYCPPFLAGS="$CPPFLAGS -I. -DNDEBUG -D_GNU_SOURCE=1"
++MYLDFLAGS="$LDFLAGS -L."
+ MYRUNPATH="\$(LIBDIR)"
+ MYLDLIBPATHENV="LD_LIBRARY_PATH"
+ 
+ # Building paths
+-pathtmp="$PATH"
+-PATH="$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
+-PATH="$PATH:/usr/ccs/bin:/usr/ucb:/usr/xpg4/bin:/usr/xpg6/bin:$pathtmp"
+-LIBRARY_PATH="$HOME/lib:/usr/local/lib:$LIBRARY_PATH"
+-LD_LIBRARY_PATH="$HOME/lib:/usr/local/lib:$LD_LIBRARY_PATH"
+-CPATH="$HOME/include:/usr/local/include:$CPATH"
+-PKG_CONFIG_PATH="$HOME/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+-export PATH LIBRARY_PATH LD_LIBRARY_PATH CPATH PKG_CONFIG_PATH
+ if type pkg-config > /dev/null 2>&1
+ then
+-  PATH="$PATH:`pkg-config --variable=bindir tokyocabinet`"
+-  LIBRARY_PATH="$LIBRARY_PATH:`pkg-config --variable=libdir tokyocabinet`"
+-  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pkg-config --variable=libdir tokyocabinet`"
+   CPATH="$CPATH:`pkg-config --variable=includedir tokyocabinet`"
+-  export PATH LIBRARY_PATH LD_LIBRARY_PATH CPATH PKG_CONFIG_PATH
++  export CPATH
+ fi
+ 
+ # Messages
+@@ -149,9 +138,8 @@
+ # Checking the version of Tokyo Cabinet with pkg-config
+ if type pkg-config > /dev/null 2>&1 && pkg-config --atleast-version=1.0.3 tokyocabinet
+ then
+-  MYCPPOPTS="$MYCPPOPTS -I`pkg-config --variable=includedir tokyocabinet`"
+-  MYLDOPTS="$MYLDOPTS -L`pkg-config --variable=libdir tokyocabinet`"
+-  MYRUNPATH="$MYRUNPATH:`pkg-config --variable=libdir tokyocabinet`"
++  MYCPPOPTS="$MYCPPOPTS `pkg-config --cflags tokyocabinet`"
++  MYLDOPTS="$MYLDOPTS `pkg-config --libs tokyocabinet`"
+ fi
+ 
+ # Shared libraries
+--- tokyocabinet-java-1.24/Makefile.in.orig	2017-02-13 21:14:52.178911309 +0100
++++ tokyocabinet-java-1.24/Makefile.in	2017-02-13 21:14:55.678911266 +0100
+@@ -43,8 +43,8 @@
+ CFLAGS = @MYCFLAGS@
+ LDFLAGS = @MYLDFLAGS@
+ LIBS = @LIBS@
+-LDENV = LD_RUN_PATH=/lib:/usr/lib:$(LIBDIR):$(HOME)/lib:/usr/local/lib:@MYRUNPATH@:.
+-RUNENV = @MYLDLIBPATHENV@=.:/lib:/usr/lib:$(LIBDIR):$(HOME)/lib:/usr/local/lib:@MYRUNPATH@
++LDENV = LD_RUN_PATH=.
++RUNENV = @MYLDLIBPATHENV@=.
+ 
+ 
+ 
