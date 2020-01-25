@@ -1,4 +1,3 @@
-%include	/usr/lib/rpm/macros.java
 Summary:	Java binding for Tokyo Cabinet
 Summary(pl.UTF-8):	Wiązania Javy do biblioteki Tokyo Cabinet
 Name:		java-tokyocabinet
